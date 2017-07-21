@@ -9,12 +9,15 @@ class Bmp {
     if (start > end) for (let i = start - 1; i >= end; i--) output.push(i);
     return output;
   }
+  static bgr2bin(bgrString) {
+    return parseInt(bgrString.padEnd(8, '0'), 16);
+  }
   static rgb2bgr(rgbString) {
     const r = rgbString.substr(0, 2);
     const g = rgbString.substr(2, 2);
     const b = rgbString.substr(4, 2);
     const a = rgbString.substr(6, 2) || '00';
-    return parseInt(b + g + r + a, 16);
+    return Bmp.bgr2bin(b + g + r + a);
   }
 
   constructor(bitsPerPixel, { width, height, data }) {

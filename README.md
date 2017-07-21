@@ -8,12 +8,38 @@
 ### 使用
 ```javascript
 const Bmp = require('binary-bmp');
+
+const bit = 1; // 颜色位值
+const width = 3; // 图片宽度
+const height = 3; // 图片高度
+// 像素数据
+const data = [
+  0,1,0,
+  1,1,1,
+  0,1,1
+];
+
+const bmp = new Bmp(bit, { width, height, data });
+
+console.log(bmp.getBase64()); // data:image/bmp;base64,Qk1KAA...
+console.log(bmp.getBuffer()); // Uint8Array [...]
 ```
+Bitmap位图可以分为以下几种：
+
+| 名称 | 颜色位值(bit) | 能表示的颜色数量(2^bit) | 数组元素取值范围 | 颜色表(调色板) | 数组元素含义 |
+| --- | :-: | :-: | :-: | :-: | :-: |
+| 单色位图  | 1  | 2       | 0 ~ 1   | 有 | 颜色表索引 |
+| VGA位图  | 4  | 16      | 0 ~ 15  | 有 | 颜色表索引 |
+| 灰度位图  | 8  | 256     | 0 ~ 255 | 有 | 颜色表索引 |
+| RGB位图  | 24 | ....... | 0 ~ 255 | 无 | 颜色值 |
+| RGBA位图 | 32 | ....... | 0 ~ 255 | 无 | 颜色值 |
 
 ----
-### 单色图
+### 单色位图
+
+单色图的颜色位值为`1bit`，能表示`2^1=2`种颜色。所以传入的参数`data`数组中元素为`0`或`1`两种，默认的0表示黑色，1表示白色:
+
 ```javascript
-// 单色图
 const binary = new Bmp(1, {
   width: 3,
   height: 3,
@@ -28,8 +54,10 @@ console.log(binary.getBuffer());
 ```
 <img alt="1-bit-binary.bmp" src="./examples/outputs/readme/1-bit-binary.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
+
+但是我们可以调用`setPalette`方法来自定义颜色表，代码如下。此时`0`表示颜色表中索引为0的颜色`#F44336`红色，`1`表示颜色表中索引为1的颜色`#FFFFFF`白色:
+
 ```javascript
-// 单色图，自定义调色板
 binary.setPalette([
   'F44336',
   'FFFFFF',
@@ -41,23 +69,25 @@ console.log(binary.getBuffer());
 
 ----
 ### VGA位图
+VGA图的颜色位值为`4bit`，能表示`2^4=16`种颜色。所以传入的参数`data`数组中元素取值范围为`0`~`15`，默认的0~15表示从黑色到白色均匀分布的16种颜色:
+
 ```javascript
-// 16色VGA图
 const vga = new Bmp(4, {
   width: 4,
   height: 4,
   data: [
-    0,  1, 2, 3,
-    4,  5, 6, 7,
-    8,  9,10,11,
+    0,1,2,3,
+    4,5,6,7,
+    8,9,10,11,
     12,13,14,15,
   ],
 });
 ```
 <img alt="4-bit-vga.bmp" src="./examples/outputs/readme/4-bit-vga.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
+VGA图也可以自定义调色板:
+
 ```javascript
-// 单色图，自定义调色板
 vga.setPalette([
   'F44336',
   'E91E63',
@@ -80,9 +110,11 @@ vga.setPalette([
 <img alt="4-bit-vga-palette.bmp" src="./examples/outputs/readme/4-bit-vga-palette.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
 ---
-### 灰度图
+### 灰度位图
+
+灰度图的颜色位值为`8bit`，能表示`2^8=256`种颜色，即我们常见的黑白图片。所以传入的参数`data`数组中元素取值范围为`0`~`255`，默认的0~255表示从黑色到白色均匀分布的256种颜色:
+
 ```javascript
-// 256色灰度图
 const grey = new Bmp(8, {
   width: 4,
   height: 4,
@@ -96,10 +128,13 @@ const grey = new Bmp(8, {
 ```
 <img alt="8-bit-grey.bmp" src="./examples/outputs/readme/8-bit-grey.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
+灰度图同样可以自定义调色板。
+
 ---
-### RGB图
+### RGB位图
+RGB图的颜色位值为`24bit`，这24bit由`8bit + 8bit + 8bit`组成，表示一个像素点的`red, green, blue`三原色色值，即我们常见的彩色图片。所以传入的参数`data`数组中元素取值范围为`0`~`255`，每3个为一组按`RGB`的顺序表示一个像素点的颜色:
+
 ```javascript
-// RGB图
 const rgb = new Bmp(24, {
   width: 3,
   height: 1,
@@ -110,16 +145,21 @@ const rgb = new Bmp(24, {
 ```
 <img alt="24-bit-rgb.bmp" src="./examples/outputs/readme/24-bit-rgb.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
+在有些情况下，我们提供的数据可能是`BGR`的顺序，这时只需调用`bgr`方法即可:
+
 ```javascript
-// BGR顺序
-rgb.bgr();
+rgb.brg().getBase64();
 ```
 <img alt="24-bit-bgr.bmp" src="./examples/outputs/readme/24-bit-bgr.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
+由于RGB位图的数据直接表示`颜色值`而不是`颜色表索引`，所以不再需要颜色表。
+
 ---
-### RGBA图
+### RGBA位图
+
+RGBA图颜色位值为`32bit`，相较于RGB只多了一个8bit的`A(alpha)`来表示不透明度。`data`数组每`4`个元素为一组按`RGBA`的顺序表示一个像素点的颜色:
+
 ```javascript
-// RGBA图
 const rgba = new Bmp(32, {
   width: 3,
   height: 1,
@@ -129,3 +169,6 @@ const rgba = new Bmp(32, {
 });
 ```
 <img alt="32-bit-rgba.bmp" src="./examples/outputs/readme/32-bit-rgba.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
+
+同样的，当数据是`BGRA`顺序的时候，调用`bgr`方法即可。<br>
+同样的，RGBA位图没有颜色表。
