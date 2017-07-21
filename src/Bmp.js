@@ -1,7 +1,24 @@
 const base64js = require('base64-js');
+const pattern = [
+  [ 0, 128, 32, 160, 8, 136, 40, 168 ],
+  [ 192, 64, 224, 96, 200, 72, 232, 104 ],
+  [ 48, 176, 16, 144, 56, 184, 24, 152 ],
+  [ 240, 112, 208, 80, 248, 120, 216, 88 ],
+  [ 12, 140, 44, 172, 4, 132, 36, 164 ],
+  [ 204, 76, 236, 108, 196, 68, 228, 100 ],
+  [ 60, 188, 28, 156, 52, 180, 20, 148 ],
+  [ 252, 124, 220, 92, 244, 116, 212, 8 ],
+];
 
 // https://en.wikipedia.org/wiki/BMP_file_format
 class Bmp {
+  // 5种位图的名称对应的颜色位值
+  static BINARY = 1;
+  static VGA = 4;
+  static GREY = 8;
+  static RGB = 24;
+  static RGBA = 32;
+
   // 创建一个包含指定范围的元素的数组
   static range(start, end) {
     const output = [];
@@ -9,6 +26,8 @@ class Bmp {
     if (start > end) for (let i = start - 1; i >= end; i--) output.push(i);
     return output;
   }
+
+  // 颜色字符串转32位二进制数
   static bgr2bin(bgrString) {
     return parseInt(bgrString.padEnd(8, '0'), 16);
   }
@@ -20,18 +39,59 @@ class Bmp {
     return Bmp.bgr2bin(b + g + r + a);
   }
 
-  constructor(bitsPerPixel, { width, height, data }) {
-    this.flag = 0x424d; //位图文件的类型，必须为BM(1-2字节）
-    this.reserved = 0; //位图文件保留字，必须为0(7-8字节），必须为0(9-10字节）
-    this.headerInfoSize = 40; //本结构所占用字节数（15-18字节）
-    this.colorPlanes = 1; //目标设备的级别，必须为1(27-28字节）
-    this.compression = 0; //位图压缩类型，必须是0（不压缩），1(BI_RLE8压缩类型）或2(BI_RLE4压缩类型）之一（31-34字节）
-    this.horizontalResolution = 0; //位图水平分辨率，每米像素数，在设备无关位图中为0（39-42字节）
-    this.verticalResolution = 0; //位图垂直分辨率，每米像素数，在设备无关位图中为0（43-46字节)
-    this.colorsInColorPalette = 0; //位图实际使用的颜色表中的颜色数，不用，固定为0（47-50字节）
-    this.importantColorsUsed = 0; //位图显示过程中重要的颜色数，不用，固定为0（51-54字节）
+  // canvas元素转imageData
+  static canvas2imageData(bitsPerPixel, canvas) {
+    if (typeof canvas.getContext !== 'function') {
+      // 传入的参数不是canvas
+      return canvas;
+    } else {
+      const imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+      if (bitsPerPixel === 32) {
+        // RGBA图
+        return imageData;
+      } else {
+        const { width, height } = imageData;
+        const pixels = width * height;
+        const data = new Uint8Array(pixels);
+        if (bitsPerPixel === 8 || bitsPerPixel === 1) {
+          for (let i = 0; i < pixels; i++) {
+            const r = imageData.data[i * 4 + 0];
+            const g = imageData.data[i * 4 + 1];
+            const b = imageData.data[i * 4 + 2];
+            const grey = 0.299 * r + 0.587 * g + 0.114 * b;
+            if (bitsPerPixel === 8) {
+              // 灰度图
+              data[i] = grey;
+            } else {
+              // 单色图
+              const x = i % width;
+              const y = Math.floor(i / width);
+              const bin = grey > pattern[x % 8][y % 8] ? 1 : 0;
+              data[i] = bin;
+            }
+          }
+        }
+        return { width, height, data };
+      }
+    }
+  }
 
+  isBGRMode = false;
+  isVerticalFlip = false;
+
+  flag = 0x424d; //位图文件的类型，必须为BM(1-2字节）
+  reserved = 0; //位图文件保留字，必须为0(7-8字节），必须为0(9-10字节）
+  headerInfoSize = 40; //本结构所占用字节数（15-18字节）
+  colorPlanes = 1; //目标设备的级别，必须为1(27-28字节）
+  compression = 0; //位图压缩类型，必须是0（不压缩），1(BI_RLE8压缩类型）或2(BI_RLE4压缩类型）之一（31-34字节）
+  horizontalResolution = 0; //位图水平分辨率，每米像素数，在设备无关位图中为0（39-42字节）
+  verticalResolution = 0; //位图垂直分辨率，每米像素数，在设备无关位图中为0（43-46字节)
+  colorsInColorPalette = 0; //位图实际使用的颜色表中的颜色数，不用，固定为0（47-50字节）
+  importantColorsUsed = 0; //位图显示过程中重要的颜色数，不用，固定为0（51-54字节）
+
+  constructor(bitsPerPixel, canvas) {
     this.bitsPerPixel = bitsPerPixel; //每个像素所需的位数，必须是1（双色），4(16色），8(256色）16(高彩色)或24（真彩色）之一（29-30字节）
+    const { width, height, data } = Bmp.canvas2imageData(bitsPerPixel, canvas);
     this.widthInPixels = width; //位图的宽度，以像素为单位（19-22字节）
     this.heightInPixels = height; //位图的高度，以像素为单位（23-26字节）
     this.data = data;
@@ -168,7 +228,6 @@ class Bmp {
     this.isBGRMode = false;
     return this;
   }
-
   // 数据是按BGR顺序排列
   bgr() {
     this.isBGRMode = true;

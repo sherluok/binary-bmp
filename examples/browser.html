@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>binary-bmp测试</title>
+    <style media="screen">
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      #lenna-jpg {
+        display: none;
+      }
+      ul {
+        margin-top: 50px;
+        list-style: none;
+        display: flex;
+        justify-content: space-around;
+      }
+      li {
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="lenna-jpg" src="" alt="lenna" />
+    <ul>
+      <li>
+        <h1>canvas</h1>
+        <canvas id="canvas" width="200" height="200"></canvas>
+      </li>
+      <li>
+        <h1>rgba</h1>
+        <img id="rgba-bmp" width="200" height="200" alt="rgba" />
+      </li>
+      <li>
+        <h1>grey</h1>
+        <img id="grey-bmp" width="200" height="200" alt="grey" />
+      </li>
+      <li>
+        <h1>binary</h1>
+        <img id="binary-bmp" width="200" height="200" alt="binary" />
+      </li>
+    </ul>
+
+    <script type="text/javascript" src="../lib/Bmp.min.js"></script>
+    <script type="text/javascript" src="./lenna.js"></script>
+    <script type="text/javascript" src="./browser.js"></script>
+  </body>
+</html>

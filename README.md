@@ -1,9 +1,15 @@
 # binary-bmp
-纯JS编写,可以将数组或canvas转换成单色点位图
+纯JS编写，利用ES6的ArrayBuffer对象操作二进制数实现，可以将`数组`或`canvas`转为位图格式的文件。支持1位(单色)、4位(VGA)、8位（灰度）、24位（RGB）、32位（RGBA）位图。
 
 ### 安装
 
+Npm:
+
 	npm install binary-bmp
+
+浏览器:
+
+	<script src="./lib/Bmp.min.js"></script>
 
 ### 使用
 ```javascript
@@ -48,8 +54,8 @@ const binary = new Bmp(1, {
     0,1,1,
   ],
 });
-console.log(binary.getBase64());
 console.log(binary.getBuffer());
+console.log(binary.getBase64());
 ```
 <img alt="1-bit-binary.bmp" src="./examples/outputs/readme/1-bit-binary.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
@@ -61,8 +67,8 @@ binary.setPalette([
   'F44336',
   'FFFFFF',
 ]);
-console.log(binary.getBase64());
 console.log(binary.getBuffer());
+console.log(binary.getBase64());
 ```
 <img alt="1-bit-binary-palette.bmp" src="./examples/outputs/readme/1-bit-binary-palette.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
@@ -84,7 +90,7 @@ const vga = new Bmp(4, {
 ```
 <img alt="4-bit-vga.bmp" src="./examples/outputs/readme/4-bit-vga.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
-VGA图也可以自定义调色板:
+VGA图也可以自定义颜色表:
 
 ```javascript
 vga.setPalette([
@@ -127,7 +133,7 @@ const grey = new Bmp(8, {
 ```
 <img alt="8-bit-grey.bmp" src="./examples/outputs/readme/8-bit-grey.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
-灰度图同样可以自定义调色板。
+灰度图同样可以自定义颜色表，由于灰度图有`2^8=256`种颜色，所以传入`setPalette`方法的数组有256个元素，代码太长，故不在此展示。
 
 ---
 ### RGB位图
@@ -171,3 +177,43 @@ const rgba = new Bmp(32, {
 
 同样的，当数据是`BGRA`顺序的时候，调用`bgr`方法即可。<br>
 同样的，RGBA位图没有颜色表。
+
+### 将Canvas转为Bitmap
+
+支持将canvas转为RGBA位图、灰度位图、单色位图:
+
+```javascript
+const canvas = document.getElementById('canvas-id');
+
+const rgba = new Bmp(32, canvas);
+const grey = new Bmp(8, canvas);
+const binary = new Bmp(1, canvas);
+```
+
+### 增加代码的可读性
+
+由于需要记住每种位图的颜色位值很麻烦，维护代码时也很容易忘记每种颜色位值代表的位图种类，所以`Bmp`类有5个以位图名称命名的`静态属性`保存了5种位图的颜色位值:
+
+```javascript
+Bmp.BINARY === 1
+Bmp.VGA    === 4
+Bmp.GREY   === 8
+Bmp.RGB    === 24
+Bmp.RGBA   === 32
+```
+
+```javascript
+const binary = new Bmp(Bmp.BINARY, {
+  width: 3,
+  height: 3,
+  data: [
+    0,1,0,
+    1,1,1,
+    0,1,1,
+  ],
+});
+```
+
+### 示例
+
+参考本项目`examples`目录下的[node.js](./examples/node.js)和[browser.js](./examples/browser.js)

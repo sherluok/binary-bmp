@@ -4,8 +4,9 @@
   "description": "A pure javascript binary bitmap image creator, you can input an array or a H5 canvas and get base64 or buffer type output",
   "main": "index.js",
   "scripts": {
-    "watch": "babel -w src -d lib",
-    "build": "babel src -d lib"
+    "babel": "babel -w src -d lib",
+    "webpack": "webpack --watch --progress --colors",
+    "build": "babel src -d lib && webpack"
   },
   "repository": {
     "type": "git",
@@ -13,7 +14,11 @@
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
-    "babel-preset-latest": "^6.24.1"
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-latest": "^6.24.1",
+    "expose-loader": "^0.7.3",
+    "webpack": "^3.3.0"
   },
   "keywords": [],
   "author": "",
