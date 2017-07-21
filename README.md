@@ -1,5 +1,6 @@
-# binary-bmp
-纯JS编写，利用ES6的ArrayBuffer对象操作二进制数实现，可以将`数组`或`canvas`转为位图格式的文件。支持单色位图、VGA位图、灰度位图、RGB位图、RGBA位图。
+![logo](./examples/outputs/readme/logo.png)
+
+**Binary Bmp**可以将**数组**或**canvas**转为位图格式的文件。纯JS编写，利用ES6的ArrayBuffer对象操作二进制数实。现支持单色位图、VGA位图、灰度位图、RGB位图、RGBA位图。
 
 * [安装](#安装)
 * [使用](#使用)
