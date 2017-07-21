@@ -4,8 +4,8 @@
   "description": "A pure javascript binary bitmap image creator, you can input an array or a H5 canvas and get base64 or buffer type output",
   "main": "index.js",
   "scripts": {
-    "babel": "babel -w src -d lib",
-    "webpack": "webpack --watch --progress --colors",
+    "babel": "babel src -d lib -w",
+    "webpack": "webpack --watch",
     "build": "babel src -d lib && webpack"
   },
   "repository": {
