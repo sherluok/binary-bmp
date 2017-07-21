@@ -12,8 +12,7 @@ const Bmp = require('binary-bmp');
 const bit = 1; // 颜色位值
 const width = 3; // 图片宽度
 const height = 3; // 图片高度
-// 像素数据
-const data = [
+const data = [ // 像素数据
   0,1,0,
   1,1,1,
   0,1,1
@@ -21,8 +20,8 @@ const data = [
 
 const bmp = new Bmp(bit, { width, height, data });
 
-console.log(bmp.getBase64()); // data:image/bmp;base64,Qk1KAA...
 console.log(bmp.getBuffer()); // Uint8Array [...]
+console.log(bmp.getBase64()); // data:image/bmp;base64,Qk1KAA...
 ```
 Bitmap位图可以分为以下几种：
 
@@ -69,7 +68,7 @@ console.log(binary.getBuffer());
 
 ----
 ### VGA位图
-VGA图的颜色位值为`4bit`，能表示`2^4=16`种颜色。所以传入的参数`data`数组中元素取值范围为`0`~`15`，默认的0~15表示从黑色到白色均匀分布的16种颜色:
+VGA图的颜色位值为`4bit`，能表示`2^4=16`种颜色。所以传入的参数`data`数组中元素取值范围为`0`-`15`，默认的0至15表示从黑色到白色均匀分布的16种颜色:
 
 ```javascript
 const vga = new Bmp(4, {
@@ -112,7 +111,7 @@ vga.setPalette([
 ---
 ### 灰度位图
 
-灰度图的颜色位值为`8bit`，能表示`2^8=256`种颜色，即我们常见的黑白图片。所以传入的参数`data`数组中元素取值范围为`0`~`255`，默认的0~255表示从黑色到白色均匀分布的256种颜色:
+灰度图的颜色位值为`8bit`，能表示`2^8=256`种颜色，即我们常见的黑白图片。所以传入的参数`data`数组中元素取值范围为`0`-`255`，默认的0至255表示从黑色到白色均匀分布的256种颜色:
 
 ```javascript
 const grey = new Bmp(8, {
@@ -132,7 +131,7 @@ const grey = new Bmp(8, {
 
 ---
 ### RGB位图
-RGB图的颜色位值为`24bit`，这24bit由`8bit + 8bit + 8bit`组成，表示一个像素点的`red, green, blue`三原色色值，即我们常见的彩色图片。所以传入的参数`data`数组中元素取值范围为`0`~`255`，每3个为一组按`RGB`的顺序表示一个像素点的颜色:
+RGB图的颜色位值为`24bit`，这24bit由`8bit + 8bit + 8bit`组成，表示一个像素点的`red, green, blue`三原色色值，即我们常见的彩色图片。所以传入的参数`data`数组中元素取值范围为`0`-`255`，每3个为一组按`RGB`的顺序表示一个像素点的颜色:
 
 ```javascript
 const rgb = new Bmp(24, {
@@ -148,7 +147,7 @@ const rgb = new Bmp(24, {
 在有些情况下，我们提供的数据可能是`BGR`的顺序，这时只需调用`bgr`方法即可:
 
 ```javascript
-rgb.brg().getBase64();
+rgb.bgr().getBase64();
 ```
 <img alt="24-bit-bgr.bmp" src="./examples/outputs/readme/24-bit-bgr.png" width="100" style="box-shadow: 0 0 5px #CCC;" />
 
