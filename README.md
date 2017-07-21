@@ -199,6 +199,7 @@ const rgba = new Bmp(32, canvas);
 const grey = new Bmp(8, canvas);
 const binary = new Bmp(1, canvas);
 ```
+![canvas](./examples/outputs/readme/canvas.jpg)
 
 ### 增强代码的可读性
 
