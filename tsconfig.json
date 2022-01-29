@@ -1,0 +1,22 @@
+{
+  "include": ["src"],
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "target": "ES6",
+    "module": "ESNext",
+    "strict": true,
+    "allowJs": false,
+    "checkJs": false,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": false,
+    "downlevelIteration": true,
+    "importsNotUsedAsValues": "preserve",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    // "outDir": "dist",
+    // "noEmit": false,
+  }
+}

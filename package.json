@@ -1,27 +1,38 @@
 {
   "name": "binary-bmp",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "A pure javascript binary bitmap image creator, you can input an array or a H5 canvas and get base64 or buffer type output",
-  "main": "index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.iife.js",
   "scripts": {
+    "watch": "rollup --config rollup.config.js --watch",
     "babel": "babel src -d lib -w",
     "webpack": "webpack --watch",
-    "build": "babel src -d lib && webpack"
+    "build": "rollup --config rollup.config.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sherluok/binary-bmp.git"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^8.3.0",
     "babel-cli": "^6.24.1",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-latest": "^6.24.1",
     "expose-loader": "^0.7.3",
+    "rollup": "^2.66.1",
+    "typescript": "^4.5.5",
     "webpack": "^3.3.0"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "bitmap",
+    "web",
+    "dom",
+    "canvas"
+  ],
+  "author": "sherluok",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/sherluok/binary-bmp/issues"
