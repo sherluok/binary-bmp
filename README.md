@@ -40,6 +40,8 @@ const { make } = require('binary-bmp');
 
 ### 使用
 ```js
+import { make } from 'binary-bmp';
+
 const uint8array = make({
   bits: 1, // 颜色位值
   width: 3, // 图片宽度
@@ -109,7 +111,7 @@ const binaryPalette = make({
 
 VGA位图的颜色位值为 `4bit`，能表示 `2^4=16` 种颜色。所以 `data` 数组中元素取值范围为 `0`-`15`，默认 0 至 15 表示从黑色到白色均匀分布的16个颜色:
 
-```javascript
+```js
 const vga = make({
   bits: 4,
   width: 4,
@@ -127,7 +129,7 @@ const vga = make({
 
 VGA 位图也可以自定义颜色表:
 
-```javascript
+```js
 const vgaPalette = make({
   bits: 4,
   width: 4,
@@ -169,7 +171,7 @@ const vgaPalette = make({
 
 灰度位图的颜色位值为 `8bit`，能表示 `2^8=256` 种颜色，即我们常见的黑白图片。所以 `data` 数组中元素取值范围为 `0`-`255`，默认的 0 至 255 表示从黑色到白色均匀分布的256种颜色:
 
-```javascript
+```js
 const grey = make({
   bits: 8,
   width: 4,
@@ -193,7 +195,7 @@ const grey = make({
 
 RGB位图的颜色位值为 `24bit`，这 24 bit 由 `8bit + 8bit + 8bit` 组成，表示一个像素点的 `red, green, blue` 三个分量，即我们常见的彩色图片。所以 `data` 数组中元素取值范围为 `0`-`255`，每 3 个为一组按 `RGB` 的顺序表示一个像素点的颜色:
 
-```javascript
+```js
 const rgb = make({
   bits: 24,
   width: 3,
@@ -214,7 +216,7 @@ const rgb = make({
 
 RGBA位图颜色位值为 `32bit`，相较于 RGB 位图只多了一个 8bit 的 `A(alpha)` 分量来表示不透明度。`data` 数组每 `4` 个元素为一组按 `RGBA` 的顺序表示一个像素点的颜色:
 
-```javascript
+```js
 const rgba = make({
   bits: 32,
   width: 3,
@@ -234,6 +236,8 @@ const rgba = make({
 支持将 canvas 转为 RGBA 位图、灰度位图、单色位图:
 
 ```js
+import { fromCanvas } from 'binary-bmp';
+
 const canvas = document.getElementById('canvas-id');
 
 const rgba = fromCanvas(32, canvas);
@@ -244,28 +248,27 @@ const binary = fromCanvas(1, canvas);
 
 ### 增强代码的可读性
 
-由于需要记住每种位图的颜色位值很麻烦，维护代码时也很容易忘记每种颜色位值代表的位图种类，所以`Bmp`类有5个以位图名称命名的`静态属性`保存了5种位图的颜色位值:
+由于需要记住每种位图的颜色位值很麻烦，维护代码时也很容易忘记每种颜色位值代表的位图种类，所以包导出了5个以位图名称命名的位图颜色位值:
 
-```javascript
-Bmp.BINARY === 1
-Bmp.VGA    === 4
-Bmp.GREY   === 8
-Bmp.RGB    === 24
-Bmp.RGBA   === 32
-```
 
-```javascript
-const binary = new Bmp(Bmp.BINARY, {
-  width: 3,
-  height: 3,
-  data: [
-    0,1,0,
-    1,1,1,
-    0,1,1,
-  ],
-});
+```js
+import { BINARY, VGA, GREY, RGB, RGBA } from 'binary-bmp';
+
+BINARY === 1
+VGA    === 4
+GREY   === 8
+RGB    === 24
+RGBA   === 32
 ```
 
 ### 示例
 
-参考本项目`examples`目录下的[node.js](./examples/node.js)和[browser.js](./examples/browser.js)
+参考本仓库 [examples](./examples) 目录下的例子:
+ - 服务器使用请参考：[node.js](./examples/node.js)
+ - 浏览器使用请参考：[browser.js](./examples/browser.js)
+
+```js
+// 保存到本地
+// 生成临时 Blob URL
+// 生成 base64 data URL
+```
