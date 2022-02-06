@@ -271,6 +271,37 @@ RGB    === 24
 RGBA   === 32
 ```
 
+### API
+
+```typescript
+export function make(options: IOption): Uint8Array;
+export function fromCanvas(bits: number, canvas: ICanvasLike): Uint8Array;
+
+interface IOption {
+  bits: number,
+  width: number,
+  height: number,
+  palette?: string[],
+  data: Indexable<number>,
+}
+
+interface Indexable<T> {
+  [index: number]: T;
+}
+
+interface ICanvasLike {
+  width: number;
+	height: number;
+  getContext(contextId: '2d'): {
+    getImageData(sx: number, sy: number, sw: number, sh: number): {
+      readonly width: number;
+      readonly height: number;
+      readonly data: Uint8ClampedArray;
+    };
+  };
+}
+```
+
 ### 示例
 
 更多使用方法请参考本仓库 [examples](./examples) 目录下的例子:
