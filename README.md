@@ -1,6 +1,6 @@
 ![logo](./examples/outputs/4-bits-logo-10x.bmp)
 
-**Binary Bmp** 是纯 JS 编写的无依赖的位图文件生成器，可从**像素数据**或 **canvas 对象**生成单色、VGA、灰度、RGB、RGBA 位图文件。
+**Binary Bmp** 是纯 JS 编写的无依赖的位图文件生成器，可由**像素数组**或 **canvas 对象**生成单色、VGA、灰度、RGB、RGBA 位图文件。
 
 * [安装](#安装)
 * [使用](#使用)
@@ -9,7 +9,8 @@
 	* [灰度位图](#灰度位图)
 	* [RGB 位图](#rgb位图)
 	* [RGBA 位图](#rgba位图)
-* [canvas转位图](#canvas转位图)
+* [Canvas 转位图](#canvas转位图)
+* [自定义颜色表](#自定义颜色表)
 * [示例](#示例)
 
 ### 安装
@@ -103,7 +104,7 @@ const binaryPalette = make({
 
 ![](./examples/outputs/1-bits-binary-palette-30x.bmp)
 
-此时 `0` 表示颜色表中索引为0的颜色即 `#F44336`（红色），`1` 表示颜色表中索引为1的颜色即 `#FFFFFF`（白色）
+此时 `0` 表示颜色表中索引为 0 的颜色即 `#F44336`（红色），`1` 表示颜色表中索引为 1 的颜色即 `#FFFFFF`（白色）
 
 ----
 
@@ -163,8 +164,6 @@ const vgaPalette = make({
 
 ![](./examples/outputs/4-bits-vga-palette-30x.bmp)
 
-自定义颜色表中颜色数量可以少于16个。例如 data 数组中最大的索引只到 7，那么自定义 7 个颜色就足够了，当自定义颜色少于 7 个时，剩下的颜色会被填充为黑色。
-
 ---
 
 ### 灰度位图
@@ -187,13 +186,13 @@ const grey = make({
 
 ![](./examples/outputs/8-bits-grey-30x.bmp)
 
-灰度位图同样可以自定义颜色表。由于灰度位图能表示`2^8=256`种颜色，所以自定义颜色表中最多可能有256个颜色，代码太长故不在此展示。
+灰度位图同样可以自定义颜色表。由于灰度位图能表示 `2^8=256` 种颜色，所以自定义颜色表中最多可能有256个颜色，代码太长故不在此展示。
 
 ---
 
 ### RGB位图
 
-RGB位图的颜色位值为 `24bit`，这 24 bit 由 `8bit + 8bit + 8bit` 组成，表示一个像素点的 `red, green, blue` 三个分量，即我们常见的彩色图片。所以 `data` 数组中元素取值范围为 `0`-`255`，每 3 个为一组按 `RGB` 的顺序表示一个像素点的颜色:
+RGB位图的颜色位值为 `24bit`，这 24bit 由 `8bit + 8bit + 8bit` 组成，表示一个像素点的 `R(red)G(green)B(blue)` 三个分量，即我们常见的彩色图片。所以 `data` 数组中元素取值范围为 `0`-`255`，每3个为一组按 `RGB` 的顺序表示一个像素点的颜色:
 
 ```js
 const rgb = make({
@@ -243,8 +242,19 @@ const canvas = document.getElementById('canvas-id');
 const rgba = fromCanvas(32, canvas);
 const grey = fromCanvas(8, canvas);
 const binary = fromCanvas(1, canvas);
+
+const blob = new Blob([rgba], { type: 'image/bmp' });
+const url = URL.createObjectURL(blob);
 ```
+
 ![canvas](./examples/outputs/canvas.png)
+
+> 同时兼容 `node-canvas` 等实现了 [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) 的库。
+
+### 自定义颜色表
+
+只有1位单色位图、4位VGA位图、8位灰度位图有自定义颜色表（调色板）。颜色表中最多有 `2^n` 个颜色，`n` 为位图的颜色位值。
+例如4位VGA位图的自定义颜色表中最多可以有`2^4=16`个颜色。具体数量可以少于16个，例如 data 数组中最大的索引只到 7，那么自定义 7 个颜色就足够了，当自定义颜色少于 7 个时，剩下的颜色会被填充为黑色。
 
 ### 增强代码的可读性
 
