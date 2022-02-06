@@ -1,16 +1,5 @@
 import { BINARY, RGBA, GREY } from './bits';
-
-export interface ICanvasLike {
-  width: number;
-	height: number;
-  getContext(contextId: '2d'): {
-    getImageData(sx: number, sy: number, sw: number, sh: number): {
-      readonly width: number;
-      readonly height: number;
-      readonly data: Uint8ClampedArray;
-    };
-  };
-}
+import { make } from './bmp';
 
 const pattern = [
   [0, 128, 32, 160, 8, 136, 40, 168],
@@ -23,14 +12,25 @@ const pattern = [
   [252, 124, 220, 92, 244, 116, 212, 8],
 ];
 
-export function getImageData(bits: number, canvas: ICanvasLike) {
-  const imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
-  if (bits === RGBA) return imageData;
-  
+interface ICanvasLike {
+  width: number;
+	height: number;
+  getContext(contextId: '2d'): {
+    getImageData(sx: number, sy: number, sw: number, sh: number): {
+      readonly width: number;
+      readonly height: number;
+      readonly data: Uint8ClampedArray;
+    };
+  };
+}
+
+export function fromCanvas(bits: number, canvas: ICanvasLike) {
+  const ctx = canvas.getContext('2d');
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const { width, height, data } = imageData;
-  const uint8 = new Uint8ClampedArray(width * height);
 
   if (bits === GREY || bits === BINARY) {
+    const uint8 = new Uint8ClampedArray(width * height);
     for (let i = 0; i < uint8.length; i += 1) {
       const r = data[i * 4 + 0];
       const g = data[i * 4 + 1];
@@ -44,11 +44,10 @@ export function getImageData(bits: number, canvas: ICanvasLike) {
         uint8[i] = grey > pattern[x % 8][y % 8] ? 1 : 0;
       }
     }
+    return make({ bits, width, height, data: uint8 });
+  } else if (bits === RGBA) {
+    return make({ bits, width, height, data });
+  } else {
+    throw new Error(`Support 1 or 8 or 32 bits color only, recieved [${bits}]`);
   }
-
-  return {
-    width,
-    height,
-    data: uint8,
-  };
 }

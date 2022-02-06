@@ -1,5 +1,6 @@
+import typescript from '@rollup/plugin-typescript';
+import { terser } from 'rollup-plugin-terser';
 import packageJson from './package.json';
-import typescriptRollupPlugin from '@rollup/plugin-typescript';
 
 export default {
   input: 'src/index.ts',
@@ -17,10 +18,9 @@ export default {
     sourcemap: true,
     name: 'Bmp',
     format: 'iife',
+    plugins: [terser()],
   }],
   plugins:[
-    typescriptRollupPlugin({
-      tsconfig: './tsconfig.json',
-    }),
+    typescript(),
   ],
 }

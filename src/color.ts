@@ -1,8 +1,10 @@
-// 颜色字符串转32位二进制数
+/** BGRA颜色字符串转32位二进制数 */
 function bgra2bin(bgrString: string) {
-  return parseInt(bgrString.padEnd(8, '0'), 16);
+  const s = bgrString.replace(/^#/, '');
+  return parseInt(s.padEnd(8, '0'), 16);
 }
 
+/** RGBA颜色字符串转32位二进制数 */
 export function rgba2bgra(rgbString: string) {
   const s = rgbString.replace(/^#/, '');
   const r = s.slice(0, 2);

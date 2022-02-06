@@ -1,4 +1,4 @@
-![logo](./assets/4-bits-logo-10x.bmp)
+![logo](./examples/outputs/4-bits-logo-10x.bmp)
 
 **Binary Bmp** 是纯 JS 编写的无依赖的位图文件生成器，可从**像素数据**或 **canvas 对象**生成单色、VGA、灰度、RGB、RGBA 位图文件。
 
@@ -32,7 +32,7 @@ const { make } = require('binary-bmp');
 
 **HTML**
 ```html
-<script src="./binary-bmp/dist/index.iife.js"></script>
+<script src="./node_modules/binary-bmp/dist/index.iife.js"></script>
 <script>
   const { make } = window.Bmp;
 </script>
@@ -55,7 +55,7 @@ const uint8array = make({
 ```
 位图可以分为以下几种：
 
-| 名称 | 颜色位值 | 能表示的颜色数量 | 数组元素取值范围 | 颜色表(调色板) | 数组元素含义 |
+| 名称 | 颜色位值 | 颜色数量 | 数组元素取值范围 | 颜色表 | 数组元素含义 |
 | --- | :-: | :-: | :-: | :-: | :-: |
 | 单色位图  | 1  | 2       | 0 ~ 1   | ✅ | 颜色表索引 |
 | VGA位图  | 4  | 16      | 0 ~ 15  | ✅ | 颜色表索引 |
@@ -80,7 +80,7 @@ const binary = make({
   ],
 });
 ```
-![](./assets/1-bits-binary-30x.bmp)
+![](./examples/outputs/1-bits-binary-30x.bmp)
 
 但是我们可以使用 `palette` 属性自定义颜色表:
 
@@ -101,7 +101,7 @@ const binaryPalette = make({
 });
 ```
 
-![](./assets/1-bits-binary-palette-30x.bmp)
+![](./examples/outputs/1-bits-binary-palette-30x.bmp)
 
 此时 `0` 表示颜色表中索引为0的颜色即 `#F44336`（红色），`1` 表示颜色表中索引为1的颜色即 `#FFFFFF`（白色）
 
@@ -125,7 +125,7 @@ const vga = make({
 });
 ```
 
-![](./assets/4-bits-vga-30x.bmp)
+![](./examples/outputs/4-bits-vga-30x.bmp)
 
 VGA 位图也可以自定义颜色表:
 
@@ -161,7 +161,7 @@ const vgaPalette = make({
 });
 ```
 
-![](./assets/4-bits-vga-palette-30x.bmp)
+![](./examples/outputs/4-bits-vga-palette-30x.bmp)
 
 自定义颜色表中颜色数量可以少于16个。例如 data 数组中最大的索引只到 7，那么自定义 7 个颜色就足够了，当自定义颜色少于 7 个时，剩下的颜色会被填充为黑色。
 
@@ -185,7 +185,7 @@ const grey = make({
 });
 ```
 
-![](./assets/8-bits-grey-30x.bmp)
+![](./examples/outputs/8-bits-grey-30x.bmp)
 
 灰度位图同样可以自定义颜色表。由于灰度位图能表示`2^8=256`种颜色，所以自定义颜色表中最多可能有256个颜色，代码太长故不在此展示。
 
@@ -206,7 +206,7 @@ const rgb = make({
 });
 ```
 
-![](./assets/24-bits-rgb-30x.bmp)
+![](./examples/outputs/24-bits-rgb-30x.bmp)
 
 由于RGB位图的数据直接表示`颜色值`而不是`颜色表索引`，所以不再需要颜色表。
 
@@ -227,7 +227,7 @@ const rgba = make({
 });
 ```
 
-![](./assets/32-bits-rgba-30x.bmp)
+![](./examples/outputs/32-bits-rgba-30x.bmp)
 
 同样的，RGBA位图没有颜色表。
 
@@ -244,7 +244,7 @@ const rgba = fromCanvas(32, canvas);
 const grey = fromCanvas(8, canvas);
 const binary = fromCanvas(1, canvas);
 ```
-![canvas](./assets/canvas.jpg)
+![canvas](./examples/outputs/canvas.png)
 
 ### 增强代码的可读性
 
@@ -263,12 +263,6 @@ RGBA   === 32
 
 ### 示例
 
-参考本仓库 [examples](./examples) 目录下的例子:
+更多使用方法请参考本仓库 [examples](./examples) 目录下的例子:
  - 服务器使用请参考：[node.js](./examples/node.js)
  - 浏览器使用请参考：[browser.js](./examples/browser.js)
-
-```js
-// 保存到本地
-// 生成临时 Blob URL
-// 生成 base64 data URL
-```

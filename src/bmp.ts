@@ -27,7 +27,7 @@ import { GREY } from './bits';
 import { SequentialDataView } from './buffer';
 import { rgba2bgra } from './color';
 
-interface Option {
+export interface IOption {
   bits: number,
   width: number,
   height: number,
@@ -40,7 +40,7 @@ interface Indexable<T> {
 }
 
 /** 生成位图文件 */
-export function make(options: Option) {
+export function make(options: IOption) {
   const { bits, width, height, palette, data } = options;
   /** 颜色表大小(字节) */
   const colorTableSize = bits > GREY ? 0 : (palette?.length || (1 << bits)) * 4;
