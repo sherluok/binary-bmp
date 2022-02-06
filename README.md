@@ -11,6 +11,7 @@
 	* [RGBA 位图](#rgba位图)
 * [Canvas 转位图](#canvas转位图)
 * [自定义颜色表](#自定义颜色表)
+* [API](#API)
 * [示例](#示例)
 
 ### 安装
@@ -274,7 +275,10 @@ RGBA   === 32
 ### API
 
 ```typescript
+/** 生成位图文件 */
 export function make(options: IOption): Uint8Array;
+
+/** 从类Canvas对象生成位图文件 */
 export function fromCanvas(bits: number, canvas: ICanvasLike): Uint8Array;
 
 interface IOption {
