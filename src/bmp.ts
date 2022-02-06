@@ -1,3 +1,28 @@
+/**
+ * BMP位图文件格式
+ * https://en.wikipedia.org/wiki/BMP_file_format
+ * 
+ * 位图文件由文件头、信息头、颜色表、像素数据组成。
+ * 分为1位单色位图、4位VGA位图、8位灰度位图、24位RGB位图、32位RGBA位图几种。
+ * 
+ * ## 颜色表
+ * 
+ * 只有1,4,8位色彩才需要颜色表, 24,32位真彩色无颜色表;
+ * 颜色表中最多有2^n个颜色, 即1,4,8位色彩分别有2,16,256个, 少于2^n时剩余的颜色会显示为黑色;
+ * 每个颜色由4字节的BGRA组成, 在不支持Alpha透明度通道的标准中最后一字节固定为0x00;
+ * 
+ * ## 像素数据
+ * 
+ * 像素数据记录了位图的每一个像素。
+ * 1位色彩每8个像素占1个字节;
+ * 4位色彩每2个像素占1个字节;
+ * 8位色彩每1个像素占1个字节;
+ * 24位色彩每1个像素占3个字节, 按B,G,R顺序组成;
+ * 32位色彩每1个像素占4个字节, 按B,G,R,A顺序组成;
+ * 记录顺序在扫描列之间是从下到上, 记录顺序在扫描行内是从左到右;
+ * 一个扫描行所占的字节数必须是4的倍数, 不足的以0填充;
+ */
+
 import { GREY } from './bits';
 import { SequentialDataView } from './buffer';
 import { rgba2bgra } from './color';
@@ -7,7 +32,6 @@ interface Option {
   width: number,
   height: number,
   palette?: string[],
-  verticalFlip?: boolean,
   data: Indexable<number>,
 }
 
@@ -15,38 +39,21 @@ interface Indexable<T> {
   [index: number]: T;
 }
 
-/**
- * 生成位图文件
- * - `bit = 1` 单色位图
- * - `bit = 4` VGA位图
- * - `bit = 8` 灰度位图
- * - `bit = 24` RGB位图
- * - `bit = 32` RGBA位图
- */
+/** 生成位图文件 */
 export function make(options: Option) {
   const { bits, width, height, palette, data } = options;
-  // 只有1,4,8位色彩才需要颜色表, 24,32位真彩色无颜色表;
-  // 颜色表中最多有2^n个颜色, 即1,4,8位色彩分别有2,16,256个, 少于2^n时剩余的颜色会显示为黑色;
-  // 每个颜色由4字节的BGRA组成, 在不支持Alpha透明度通道的标准中最后一字节固定为0x00;
-  /** 颜色表的大小 https://en.wikipedia.org/wiki/BMP_file_format#Color_table */
+  /** 颜色表大小(字节) */
   const colorTableSize = bits > GREY ? 0 : (palette?.length || (1 << bits)) * 4;
-  // 位图数据记录了位图的每一个像素:
-  // - 1位色彩: 8个像素占1个字节;
-  // - 4位色彩: 2个像素占1个字节;
-  // - 8位色彩: 1个像素占1个字节;
-  // - 24位色彩: 1个像素占3个字节, 按B,G,R顺序组成;
-  // - 32位色彩: 1个像素占4个字节, 按B,G,R,A顺序组成;
-  // 记录顺序在扫描列之间是从下到上, 记录顺序在扫描行内是从左到右;
-  // 一个扫描行所占的字节数必须是4的倍数, 不足的以0填充;
   const imageRowSize = Math.floor((bits * width + 31) / 32) * 4;
   const imageColSize = Math.abs(height);
-  /** 位图大小 */
+  /** 像素数据大小(字节) */
   const rawSize = imageRowSize * imageColSize;
-  /** 位图数据的起始位置，以相对于位图 */
+  /** 像素数据的起始位置(字节) */
   const startAt = 54 + colorTableSize;
-  /** 文件的大小，以字节为单位（3-6字节，低位在前）*/
+  /** 文件的大小(字节) */
   const fileSize = startAt + rawSize;
 
+  /** 位图文件 */
   const buffer = new ArrayBuffer(fileSize);
   const view = new SequentialDataView(buffer);
 
@@ -55,7 +62,7 @@ export function make(options: Option) {
   view.appendUint32(fileSize, true); // 3-6字节; 文件的大小; The size of the BMP file in bytes.
   view.appendUint16(0, true);        // 6-8字节; 保留字; Reserved; actual value depends on the application that creates the image, if created manually can be 0.
   view.appendUint16(0, true);        // 8-10字节; 保留字; Reserved; actual value depends on the application that creates the image, if created manually can be 0.
-  view.appendUint32(startAt, true);  // 11-14字节; 位图数据的起始位置; The offset, i.e. starting address, of the byte where the bitmap image data (pixel array) can be found.
+  view.appendUint32(startAt, true);  // 11-14字节; 像素数据的起始位置; The offset, i.e. starting address, of the byte where the bitmap image data (pixel array) can be found.
   
   // 信息头(BITMAPINFOHEADER)
   view.appendUint32(40, true);       // 15-18字节; 本结构所占用字节数;the size of this header (40 bytes).
@@ -77,11 +84,10 @@ export function make(options: Option) {
         view.appendUint32(rgba2bgra(color));
       }
     } else {
-      // (2^8 - 1) / (2^n - 1): 255, 17, 1
-      const step = 0xFF / ((1 << bits) - 1);
+      // 构造默认灰度颜色表
+      const step = 0xFF / ((1 << bits) - 1); // (2^8 - 1) / (2^n - 1): 255, 17, 1
       for (let i = 0; i < 256; i += step) {
-        // 2^24(B) + 2^16(G) + 2^8(R) + 2^1(QUAD)*0
-        view.appendUint32((i << 24) + (i << 16) + (i << 8));
+        view.appendUint32((i << 24) + (i << 16) + (i << 8)); // 2^24(B) + 2^16(G) + 2^8(R) + 2^1(QUAD)*0
       }
     }
   }
@@ -122,5 +128,5 @@ export function make(options: Option) {
       }
     }
   }
-  return buffer;
+  return new Uint8Array(buffer);
 }

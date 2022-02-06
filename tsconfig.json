@@ -1,5 +1,6 @@
 {
-  "include": ["src"],
+  "include": ["src/**/*"],
+  "exclude": ["dist"],
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
     "target": "ES6",
@@ -16,7 +17,8 @@
     "importsNotUsedAsValues": "preserve",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    // "outDir": "dist",
-    // "noEmit": false,
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": ".",
   }
 }

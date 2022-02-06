@@ -19,6 +19,8 @@ export default {
     format: 'iife',
   }],
   plugins:[
-    typescriptRollupPlugin(),
+    typescriptRollupPlugin({
+      tsconfig: './tsconfig.json',
+    }),
   ],
 }
