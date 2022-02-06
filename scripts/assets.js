@@ -143,4 +143,4 @@ create('vga-palette', 30, vgaPalette);
 create('grey', 30, grey);
 create('rgb', 30, rgb);
 create('rgba', 30, rgba);
-create('logo', 20, logo);
+create('logo', 10, logo);

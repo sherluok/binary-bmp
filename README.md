@@ -1,4 +1,4 @@
-![logo](./assets/4-bits-logo-20x.bmp)
+![logo](./assets/4-bits-logo-10x.bmp)
 
 **Binary Bmp** 是纯 JS 编写的无依赖的位图文件生成器，可从**像素数据**或 **canvas 对象**生成单色、VGA、灰度、RGB、RGBA 位图文件。
 
