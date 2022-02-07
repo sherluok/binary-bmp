@@ -1,7 +1,7 @@
 {
   "name": "binary-bmp",
-  "version": "1.0.0",
-  "description": "A pure javascript binary bitmap image creator, you can input an array or a H5 canvas and get base64 or buffer type output",
+  "version": "1.0.1",
+  "description": "A pure javascript binary bitmap image file creator, you can input an pixel data array or a canvas like object and get uint8array file data output",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "browser": "dist/index.iife.js",
@@ -22,7 +22,7 @@
   },
   "keywords": [
     "bitmap",
-    "web",
+    "nodejs",
     "dom",
     "canvas"
   ],
