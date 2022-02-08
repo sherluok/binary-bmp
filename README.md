@@ -295,7 +295,7 @@ interface Indexable<T> {
 
 interface ICanvasLike {
   width: number;
-	height: number;
+  height: number;
   getContext(contextId: '2d'): {
     getImageData(sx: number, sy: number, sw: number, sh: number): {
       readonly width: number;
