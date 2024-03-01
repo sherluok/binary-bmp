@@ -1,0 +1,63 @@
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding-block: 4rem;
+  font-family: sans-serif;
+  background-image: url("./tile.png");
+}
+
+.target {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr auto;
+  column-gap: 2rem;
+  padding: 1rem 10rem;
+
+  > canvas, > img {
+    grid-column: 1 / 2;
+    grid-row: 1 / 4;
+  }
+
+  > strong {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    font-size: 1.5rem;
+    font-family: serif;
+    line-height: 3rem;
+  }
+
+  > canvas {
+    width: 200px;
+    height: 150px;
+    box-shadow: 0 0 0 1px black;
+  }
+
+  > img {
+    width: 200px;
+    box-shadow: 0 0 0 1px black;
+  }
+
+  > p {
+    margin: 0;
+    max-width: 32rem;
+  }
+
+  > span {
+    font-family: monospace;
+    line-height: 2rem;
+  }
+}
+
+.options {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+  justify-items: start;
+  align-content: start;
+  align-items: start;
+  gap: .5rem 1rem;
+}

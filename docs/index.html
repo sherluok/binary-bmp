@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary BMP Example</title>
+  <link rel="stylesheet" href="./index.css">
+  <script src="https://unpkg.com/binary-bmp/index.iife.js"></script>
+</head>
+<body>
+  <div class="target">
+    <canvas id="source"></canvas>
+    <strong>CANVAS</strong>
+    <div class="options">
+      <label for="background">背景色</label>
+      <input type="color" id="background" name="background" value="#4488ff" />
+      <label for="flip">垂直翻转</label>
+      <input type="checkbox" id="flip" name="flip" />
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="target">
+    <img id="rgba" alt="rgba">
+    <strong>RGBA 32 Bit</strong>
+    <p>虽然 RGBA 位图文件数据中声明了透明度通道，但包括浏览器在内的大多数软件都会忽略透明度通道，只有 Photoshop 这类专业软件才会正常渲染出半透明效果。下载这张图片并拖拽到 <a href="https://www.photopea.com/?p=">Photopea</a> 中查看。</p>
+    <span></span>
+  </div>
+  <div class="target">
+    <img id="rgb" alt="rgb">
+    <strong>RGB 24 Bit</strong>
+    <p>从 Canvas 或 PNG 等具有透明度通道的数据源生成位图文件时，你可以指定一个背景色（默认白色），数据源像素的颜色会按照其透明度与该背景色混合，以达到模拟透明度的效果</p>
+    <span></span>
+  </div>
+  <div class="target">
+    <img id="grey" alt="grey">
+    <strong>GREY 8 Bit</strong>
+    <p>目前仅支持从 RGBA 生成黑白过渡的灰度图像。</p>
+    <span></span>
+  </div>
+  <div class="target">
+    <img id="vga" alt="vga">
+    <strong>VGA 4 Bit</strong>
+    <p>目前仅支持从 RGBA 生成黑白过渡的灰度图像。</p>
+    <span></span>
+  </div>
+  <div class="target">
+    <img id="binary" alt="binary">
+    <strong>BINARY 1 Bit</strong>
+    <p></p>
+    <span></span>
+  </div>
+
+  <script src="./index.js"></script>
+</body>
+</html>
