@@ -54,7 +54,7 @@ export interface ImageData {
 export interface CanvasLike {
   width: number;
 	height: number;
-  getContext(contextId: '2d'): {
+  getContext(contextId: '2d'): null | {
     getImageData(sx: number, sy: number, sw: number, sh: number): ImageData;
   };
 }
