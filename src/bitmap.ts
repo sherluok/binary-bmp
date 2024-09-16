@@ -78,6 +78,9 @@ export class Bitmap {
    */
   static fromCanvas(canvas: CanvasLike): Bitmap {
     const ctx = canvas.getContext('2d');
+    if (ctx === null) {
+      throw new Error(`Context type "2d" doesn't match a possible drawing context!`);
+    }
     const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
     return new Bitmap({
       bits: Bits.RGBA,
